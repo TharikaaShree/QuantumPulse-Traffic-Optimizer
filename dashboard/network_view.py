@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 
 
-def show_network():
+def show_network(scenario="Normal Traffic"):
 
     st.markdown(
         """
@@ -27,8 +27,54 @@ def show_network():
         ("S4", "S1"),
     ]
 
+    # Default signal colors
+    signal_colors = {
+        "S1": "#22c55e",
+        "S2": "#22c55e",
+        "S3": "#22c55e",
+        "S4": "#22c55e"
+    }
+
+    # Change signals according to scenario
+    if scenario == "Rush Hour":
+
+        signal_colors = {
+            "S1": "#facc15",
+            "S2": "#22c55e",
+            "S3": "#facc15",
+            "S4": "#22c55e"
+        }
+
+    elif scenario == "Accident":
+
+        signal_colors = {
+            "S1": "#22c55e",
+            "S2": "#facc15",
+            "S3": "#ef4444",
+            "S4": "#22c55e"
+        }
+
+    elif scenario == "Road Closure":
+
+        signal_colors = {
+            "S1": "#22c55e",
+            "S2": "#ef4444",
+            "S3": "#facc15",
+            "S4": "#22c55e"
+        }
+
+    elif scenario == "🚑 Emergency Vehicle":
+
+        signal_colors = {
+            "S1": "#facc15",
+            "S2": "#22c55e",
+            "S3": "#22c55e",
+            "S4": "#22c55e"
+        }
+
     fig = go.Figure()
 
+    # Draw roads
     for start, end in edges:
 
         x1, y1 = nodes[start]
@@ -47,6 +93,7 @@ def show_network():
             )
         )
 
+    # Draw intersections
     for name, (x, y) in nodes.items():
 
         fig.add_trace(
@@ -54,24 +101,29 @@ def show_network():
                 x=[x],
                 y=[y],
                 mode="markers+text",
+
                 text=[name],
+
                 textposition="middle center",
+
                 marker=dict(
                     size=55,
-                    color="#22c55e",
+                    color=signal_colors[name],
                     line=dict(
                         color="#ffffff",
                         width=2
                     )
                 ),
+
                 textfont=dict(
                     color="white",
                     size=14
                 ),
+
                 hovertemplate=(
                     f"<b>{name}</b><br>"
-                    "Traffic signal<br>"
-                    "Click for details"
+                    f"Scenario: {scenario}<br>"
+                    f"Signal: {signal_colors[name]}"
                     "<extra></extra>"
                 )
             )
@@ -80,12 +132,21 @@ def show_network():
     fig.update_layout(
         height=500,
         showlegend=False,
-        margin=dict(l=10, r=10, t=10, b=10),
+
+        margin=dict(
+            l=10,
+            r=10,
+            t=10,
+            b=10
+        ),
+
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
+
         xaxis=dict(
             visible=False
         ),
+
         yaxis=dict(
             visible=False
         )
