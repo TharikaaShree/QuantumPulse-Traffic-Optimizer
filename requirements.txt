@@ -1,0 +1,8 @@
+qiskit
+qiskit-aer
+qiskit-optimization
+numpy
+pandas
+networkx
+streamlit
+plotly
